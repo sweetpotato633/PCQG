@@ -593,6 +593,8 @@ def zhuanxiang(cookies, d_log, each):
         print("专项答题之前学完了")
 
 
+
+
 if __name__ == '__main__':
     #  0 读取版本信息
     start_time = time.time()
