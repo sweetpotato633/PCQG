@@ -1,10 +1,10 @@
 import jieba
-import numpy as np
-
+import re
+import os
 
 # 创建停用词列表
 def stopwordslist():
-    stopwords = [line.strip() for line in open('baidu_stopwords.txt', encoding='UTF-8').readlines()]
+    stopwords = [line.strip() for line in open("tool" + os.sep + 'baidu_stopwords.txt', encoding='UTF-8').readlines()]
     return stopwords
 
 
@@ -23,7 +23,7 @@ def do_judge_type(question, hint):
             return True
     return False
 
-def do_normal_selection(selections,hint):
+def do_normal_selection(selections,question_content,hint):
     sel_list = []
     for i in range(len(selections)):
         if selections[i] in hint:
@@ -55,4 +55,16 @@ def single_selection(selections, question_content, hint_text):
     return res_list
 
 
-stop_words = stopwordslist()
+def find_continue_blank_count(msg):
+    pattern = r'（）'
+    res = re.findall(pattern,msg)
+    return len(res)
+
+def test():
+    str = "今天烟台很多地方下了雪，包括    、    、和    。haiyou   "
+    find_continue_blank_count(str)
+
+#stop_words = stopwordslist()
+
+if __name__ == "__main__":
+    test()

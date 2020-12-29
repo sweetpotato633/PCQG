@@ -233,6 +233,8 @@ def daily(cookies, d_log, each):
                         print("题目类型非法")
                         break
                 else:
+                    question_body = driver_daily.get_question_body()
+                    print(question_body)
                     if "填空题" in category:
                         answer = tips
                         driver_daily.fill_in_blank(answer)

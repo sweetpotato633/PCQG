@@ -234,6 +234,12 @@ class Mydriver:
         print('获取选项：', options)
         return options
 
+
+    def get_question_body(self):
+        node = self.driver.find_element_by_xpath(r'//*[@id="app"]//div[@class="detail-body"]//div[@class="q-body"]/div')
+        return node.text
+
+
     def radio_check(self, check_options):
         for check_option in check_options:
             try:
