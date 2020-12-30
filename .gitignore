@@ -2,3 +2,5 @@
 /SourcePackages/vedio.txt
 /SourcePackages/article.txt
 /SourcePackages/.idea
+SourcePackages/tool/__pycache__/SemanticAnalyze.cpython-36.pyc
+SourcePackages/tool/__pycache__/expand_tool.cpython-36.pyc

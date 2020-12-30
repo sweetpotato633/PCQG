@@ -250,7 +250,7 @@ def daily(cookies, d_log, each):
                     elif "单选题" in category:
                         options = driver_daily.radio_get_options()
                         selections = [op[2:] for op in options]
-                        radio_in_tips = SemanticAnalyze.single_selection(selections, question_body, tips)
+                        radio_in_tips = SemanticAnalyze.do_single_selection(selections, question_body, tips)
                         print('根据提示', radio_in_tips)
                         driver_daily.radio_check(radio_in_tips)
                     else:
@@ -351,7 +351,7 @@ def weekly(cookies, d_log, each):
                     elif "单选题" in category:
                         options = driver_weekly.radio_get_options()
                         selections = [op[2:] for op in options]
-                        radio_in_tips = SemanticAnalyze.single_selection(selections, question_body, tips)
+                        radio_in_tips = SemanticAnalyze.do_single_selection(selections, question_body, tips)
                         print('根据提示', radio_in_tips)
                         driver_weekly.radio_check(radio_in_tips)
                     else:
