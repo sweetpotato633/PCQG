@@ -10,6 +10,7 @@ from pdlearn import threads
 from pdlearn import get_links
 from pdlearn.mydriver import Mydriver
 import pdlearn.para_config as para
+import tool.SemanticAnalyze as SemanticAnalyze
 
 
 def user_flag(dd_status, uname):
@@ -241,59 +242,17 @@ def daily(cookies, d_log, each):
 
                     elif "多选题" in category:
                         options = driver_daily.radio_get_options()
-                        radio_in_tips, radio_out_tips = "", ""
-                        for letter, option in zip(letters, options):
-                            for tip in tips:
-                                if tip in option:
-                                    # print(f'{option} in tips')
-                                    if letter not in radio_in_tips:
-                                        radio_in_tips += letter
-                        radio_out_tips = [letter for letter, option in zip(letters, options) if
-                                          (letter not in radio_in_tips)]
+                        selections = [op[2:] for op in options]
+                        radio_in_tips = SemanticAnalyze.do_muti_selection(selections,question_body,tips)
+                        print('根据提示', radio_in_tips)
+                        driver_daily.radio_check(radio_in_tips)
 
-                        print('含 ', radio_in_tips, '不含', radio_out_tips)
-                        if len(radio_in_tips) > 1:  # and radio_in_tips not in driver_daily.excludes:
-                            print('根据提示', radio_in_tips)
-                            driver_daily.radio_check(radio_in_tips)
-                        elif len(radio_out_tips) > 1:  # and radio_out_tips not in excludes
-                            print('根据提示', radio_out_tips)
-                            driver_daily.radio_check(radio_out_tips)
-                        # return driver_daily._search(content, options, excludes)
-                        else:
-                            print('无法根据提示判断，准备搜索……')
                     elif "单选题" in category:
                         options = driver_daily.radio_get_options()
-                        if '因此本题选' in tips:
-                            check=[x for x in letters if x in tips]
-                            driver_daily.radio_check(check)
-                        else:
-                            radio_in_tips, radio_out_tips = "", ""
-                            '''
-                            option_elements = driver_daily.wait.until(driver_daily.EC.presence_of_all_elements_located(
-                                (driver_daily.By.XPATH, '//*[@id="app"]/div/div[2]/div/div[4]/div[1]')))
-                            # option_elements = self.find_elements(rules['challenge_options'])
-                            options = [x.get_attribute("name") for x in option_elements]'''
-                            for letter, option in zip(letters, options):
-                                for tip in tips:
-                                    if tip in option:
-                                        # print(f'{option} in tips')
-                                        if letter not in radio_in_tips:
-                                            radio_in_tips += letter
-                                    else:
-                                        # print(f'{option} out tips')
-                                        if letter not in radio_out_tips:
-                                            radio_out_tips += letter
-
-                            print('含 ', radio_in_tips, '不含', radio_out_tips)
-                            if 1 == len(radio_in_tips):  # and radio_in_tips not in driver_daily.excludes:
-                                print('根据提示', radio_in_tips)
-                                driver_daily.radio_check(radio_in_tips)
-                            elif 1 == len(radio_out_tips):  # and radio_out_tips not in excludes
-                                print('根据提示', radio_out_tips)
-                                driver_daily.radio_check(radio_out_tips)
-                            # return driver_daily._search(content, options, excludes)
-                            else:
-                                print('无法根据提示判断，准备搜索……')
+                        selections = [op[2:] for op in options]
+                        radio_in_tips = SemanticAnalyze.single_selection(selections, question_body, tips)
+                        print('根据提示', radio_in_tips)
+                        driver_daily.radio_check(radio_in_tips)
                     else:
                         print("题目类型非法")
                         break
@@ -376,65 +335,25 @@ def weekly(cookies, d_log, each):
                         print("题目类型非法")
                         break
                 else:
+                    question_body = driver_weekly.get_question_body()
+                    print(question_body)
                     if "填空题" in category:
                         answer = tips
                         driver_weekly.fill_in_blank(answer)
 
                     elif "多选题" in category:
                         options = driver_weekly.radio_get_options()
-                        radio_in_tips, radio_out_tips = "", ""
-                        for letter, option in zip(letters, options):
-                            for tip in tips:
-                                if tip in option:
-                                    # print(f'{option} in tips')
-                                    if letter not in radio_in_tips:
-                                        radio_in_tips += letter
-                        radio_out_tips = [letter for letter, option in zip(letters, options) if
-                                          (letter not in radio_in_tips)]
+                        selections = [op[2:] for op in options]
+                        radio_in_tips = SemanticAnalyze.do_muti_selection(selections, question_body, tips)
+                        print('根据提示', radio_in_tips)
+                        driver_weekly.radio_check(radio_in_tips)
 
-                        print('含 ', radio_in_tips, '不含', radio_out_tips)
-                        if len(radio_in_tips) > 1:  # and radio_in_tips not in driver_weekly.excludes:
-                            print('根据提示', radio_in_tips)
-                            driver_weekly.radio_check(radio_in_tips)
-                        elif len(radio_out_tips) > 1:  # and radio_out_tips not in excludes
-                            print('根据提示', radio_out_tips)
-                            driver_weekly.radio_check(radio_out_tips)
-                        # return driver_weekly._search(content, options, excludes)
-                        else:
-                            print('无法根据提示判断，准备搜索……')
                     elif "单选题" in category:
                         options = driver_weekly.radio_get_options()
-                        if '因此本题选' in tips:
-                            check=[x for x in letters if x in tips]
-                            driver_weekly.radio_check(check)
-                        else:
-                            radio_in_tips, radio_out_tips = "", ""
-                            '''
-                            option_elements = driver_weekly.wait.until(driver_weekly.EC.presence_of_all_elements_located(
-                                (driver_weekly.By.XPATH, '//*[@id="app"]/div/div[2]/div/div[4]/div[1]')))
-                            # option_elements = self.find_elements(rules['challenge_options'])
-                            options = [x.get_attribute("name") for x in option_elements]'''
-                            for letter, option in zip(letters, options):
-                                for tip in tips:
-                                    if tip in option:
-                                        # print(f'{option} in tips')
-                                        if letter not in radio_in_tips:
-                                            radio_in_tips += letter
-                                    else:
-                                        # print(f'{option} out tips')
-                                        if letter not in radio_out_tips:
-                                            radio_out_tips += letter
-
-                            print('含 ', radio_in_tips, '不含', radio_out_tips)
-                            if 1 == len(radio_in_tips):  # and radio_in_tips not in driver_weekly.excludes:
-                                print('根据提示', radio_in_tips)
-                                driver_weekly.radio_check(radio_in_tips)
-                            elif 1 == len(radio_out_tips):  # and radio_out_tips not in excludes
-                                print('根据提示', radio_out_tips)
-                                driver_weekly.radio_check(radio_out_tips)
-                            # return driver_weekly._search(content, options, excludes)
-                            else:
-                                print('无法根据提示判断，准备搜索……')
+                        selections = [op[2:] for op in options]
+                        radio_in_tips = SemanticAnalyze.single_selection(selections, question_body, tips)
+                        print('根据提示', radio_in_tips)
+                        driver_weekly.radio_check(radio_in_tips)
                     else:
                         print("题目类型非法")
                         break
@@ -513,69 +432,31 @@ def zhuanxiang(cookies, d_log, each):
                         print("题目类型非法")
                         break
                 else:
+                    question_body = driver_zhuanxiang.get_question_body()
+                    print(question_body)
                     if "填空题" in category:
                         answer = tips
-                        driver_zhuanxiang.zhuanxiang_fill_in_blank(answer)
+                        if not tips:
+                            answer = "和谐社会和谐社会"
+                            print("\n未找到提示，随便填了一个\n")
+                        driver_zhuanxiang.fill_in_blank(answer)
 
                     elif "多选题" in category:
                         options = driver_zhuanxiang.radio_get_options()
-                        radio_in_tips, radio_out_tips = "", ""
-                        for letter, option in zip(letters, options):
-                            for tip in tips:
-                                if tip in option:
-                                    # print(f'{option} in tips')
-                                    if letter not in radio_in_tips:
-                                        radio_in_tips += letter
-                        radio_out_tips = [letter for letter, option in zip(letters, options) if
-                                          (letter not in radio_in_tips)]
+                        selections = [op[2:] for op in options]
+                        radio_in_tips = SemanticAnalyze.do_muti_selection(selections, question_body, tips)
+                        print('根据提示', radio_in_tips)
+                        driver_zhuanxiang.radio_check(radio_in_tips)
 
-                        print('含 ', radio_in_tips, '不含', radio_out_tips)
-                        if len(radio_in_tips) > 1:  # and radio_in_tips not in driver_zhuanxiang.excludes:
-                            print('根据提示', radio_in_tips)
-                            driver_zhuanxiang.radio_check(radio_in_tips)
-                        elif len(radio_out_tips) > 1:  # and radio_out_tips not in excludes
-                            print('根据提示', radio_out_tips)
-                            driver_zhuanxiang.radio_check(radio_out_tips)
-                        # return driver_zhuanxiang._search(content, options, excludes)
-                        else:
-                            print('无法根据提示判断，准备搜索……')
                     elif "单选题" in category:
                         options = driver_zhuanxiang.radio_get_options()
-                        if '因此本题选' in tips:
-                            check=[x for x in letters if x in tips]
-                            driver_zhuanxiang.radio_check(check)
-                        else:
-                            radio_in_tips, radio_out_tips = "", ""
-                            '''
-                            option_elements = driver_zhuanxiang.wait.until(driver_zhuanxiang.EC.presence_of_all_elements_located(
-                                (driver_zhuanxiang.By.XPATH, '//*[@id="app"]/div/div[2]/div/div[4]/div[1]')))
-                            # option_elements = self.find_elements(rules['challenge_options'])
-                            options = [x.get_attribute("name") for x in option_elements]'''
-                            for letter, option in zip(letters, options):
-                                for tip in tips:
-                                    if tip in option:
-                                        # print(f'{option} in tips')
-                                        if letter not in radio_in_tips:
-                                            radio_in_tips += letter
-                                    else:
-                                        # print(f'{option} out tips')
-                                        if letter not in radio_out_tips:
-                                            radio_out_tips += letter
-
-                            print('含 ', radio_in_tips, '不含', radio_out_tips)
-                            if 1 == len(radio_in_tips):  # and radio_in_tips not in driver_zhuanxiang.excludes:
-                                print('根据提示', radio_in_tips)
-                                driver_zhuanxiang.radio_check(radio_in_tips)
-                            elif 1 == len(radio_out_tips):  # and radio_out_tips not in excludes
-                                print('根据提示', radio_out_tips)
-                                driver_zhuanxiang.radio_check(radio_out_tips)
-                            # return driver_zhuanxiang._search(content, options, excludes)
-                            else:
-                                print('无法根据提示判断，准备搜索……')
+                        selections = [op[2:] for op in options]
+                        radio_in_tips = SemanticAnalyze.do_single_selection(selections, question_body, tips)
+                        print('根据提示', radio_in_tips)
+                        driver_zhuanxiang.radio_check(radio_in_tips)
                     else:
                         print("题目类型非法")
                         break
-                    # print("\r专项答题中，题目剩余{}题".format(d_log + d_num - i), end="")
                     time.sleep(1)
                 d_log += d_num
 

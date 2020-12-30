@@ -269,9 +269,11 @@ class Mydriver:
         print(dest)
 
     def fill_in_blank(self, answer):
+        path1 = r'//*[@id="app"]/div/div[2]/div/div[4]/div[1]/div[2]/div/input['
+        path2 = r'//*[@id="app"]//div[@class="question"]//div[@class="q-body"]/div/input['
         for i in range(0, len(answer)):
             self.driver.find_element_by_xpath(
-                '//*[@id="app"]/div/div[2]/div/div[4]/div[1]/div[2]/div/input[' + str(i + 1) + ']').send_keys(answer[i])
+                path2 + str(i + 1) + ']').send_keys(answer[i])
         self.check_delay()
         submit = WebDriverWait(self.driver, 15).until(
             lambda driver: driver.find_element_by_class_name("action-row").find_elements_by_xpath("button"))

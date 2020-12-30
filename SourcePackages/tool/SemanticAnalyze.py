@@ -1,6 +1,7 @@
 import jieba
 import re
 import os
+import tool.expand_tool as expand_tool
 
 # 创建停用词列表
 def stopwordslist():
@@ -15,24 +16,40 @@ def cut_text(input_str):
 
 
 def do_judge_type(question, hint):
+    hint = ' '.join(hint)
+    hint = expand_tool.remove_symbol(hint)
+    question = expand_tool.remove_symbol(question)
     if len(hint) > len(question):
         if question in hint:
-            return True
+            return ['A']
     else:
         if hint in question:
-            return True
-    return False
+            return ['A']
+    return ['B']
 
-def do_normal_selection(selections,question_content,hint):
+def do_muti_selection(selections,question_content,hint):
+    hint = ' '.join(hint)
     sel_list = []
+    letters = ['A','B','C','D','E','F']
+    count = find_continue_blank_count(question_content)
+    if len(selections) == count:
+        for i in range(count):
+            sel_list.append(letters[i])
+        return sel_list
     for i in range(len(selections)):
-        if selections[i] in hint:
-            sel_list.append(i)
+        if expand_tool.remove_symbol(selections[i]) in hint:
+            sel_list.append(letters[i])
     return sel_list
 
-def single_selection(selections, question_content, hint_text):
+def do_single_selection(selections, question_content, hint_text):
+    hint_text = ' '.join(hint_text)
     ratio = [0]*len(selections)
     res_list = []
+    letters = ['A', 'B', 'C', 'D', 'E', 'F']
+
+    if expand_tool.remove_symbol(selections[0]) == "正确" and expand_tool.remove_symbol(selections[1]) == "错误":
+        res_list = do_judge_type(question_content,hint_text)
+        return res_list
     for m in range(len(selections)):
         if len(selections[m]) > len(hint_text):
             short_str = hint_text
@@ -40,6 +57,8 @@ def single_selection(selections, question_content, hint_text):
         else:
             short_str = selections[m]
             long_str = hint_text
+        short_str = expand_tool.remove_symbol(short_str)
+        long_str = expand_tool.remove_symbol(long_str)
         match_length = 0
         for i in range(len(short_str)):
             if short_str[i] in long_str:
@@ -51,7 +70,7 @@ def single_selection(selections, question_content, hint_text):
         if ratio[i] > max_value:
             max_value = ratio[i]
             max_index = i
-    res_list.append(max_index)
+    res_list.append(letters[max_index])
     return res_list
 
 
