@@ -239,12 +239,25 @@ class Mydriver:
         node = self.driver.find_element_by_xpath(r'//*[@id="app"]//div[@class="detail-body"]//div[@class="q-body"]/div')
         return node.text
 
+    def click_next_when_error(self):
+        path = r'//div[@class="action-row"]/button/span'
+        try:
+            node = self.driver.find_element_by_xpath(path)
+            if node.text == "下一题":
+                return True
+            else:
+                return False
+        except:
+            return False
+
 
     def radio_check(self, check_options):
+        path1 = r'//*[@id="app"]/div/div[*]/div/div[*]/div[*]/div[*]/div[contains(text(), "'
+        path2 = r'//*[@id="app"]//div[@class="q-answers"]/div[contains(text(), "'
         for check_option in check_options:
             try:
                 self.driver.find_element_by_xpath(
-                    '//*[@id="app"]/div/div[*]/div/div[*]/div[*]/div[*]/div[contains(text(), "' + check_option + '")]').click()
+                    path2 + check_option + '")]').click()
             except Exception as e:
                 print("点击", check_option, '失败！')
         self.check_delay()
