@@ -42,14 +42,32 @@ def do_muti_selection(selections,question_content,hint):
     return sel_list
 
 def do_single_selection(selections, question_content, hint_text):
-    hint_text = ' '.join(hint_text)
+    hint_text = ''.join(hint_text)
+    hint_text = expand_tool.remove_symbol(hint_text)
     ratio = [0]*len(selections)
     res_list = []
     letters = ['A', 'B', 'C', 'D', 'E', 'F']
 
+    #判断题
     if expand_tool.remove_symbol(selections[0]) == "正确" and expand_tool.remove_symbol(selections[1]) == "错误":
         res_list = do_judge_type(question_content,hint_text)
         return res_list
+
+    #反选题
+    in_count = 0
+    out_index = 0
+    for i in range(len(selections)):
+        if selections[i] in hint_text:
+            ratio[i] = 1
+            in_count += 1
+        else:
+            out_index = i
+    if in_count == len(selections)-1:#单选题有三个选项在提示里面，说明是反选，选择不在提示中的那个
+        res_list = [letters[i]]
+        return res_list
+
+
+
     for m in range(len(selections)):
         if len(selections[m]) > len(hint_text):
             short_str = hint_text
