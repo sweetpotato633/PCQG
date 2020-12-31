@@ -234,6 +234,8 @@ def daily(cookies, d_log, each):
                         print("题目类型非法")
                         break
                 else:
+                    if driver_daily.click_next_when_error():
+                        print("这个题答错了，进行下一题\n")
                     question_body = driver_daily.get_question_body()
                     print(question_body)
                     if "填空题" in category:
@@ -335,6 +337,8 @@ def weekly(cookies, d_log, each):
                         print("题目类型非法")
                         break
                 else:
+                    if driver_weekly.click_next_when_error():
+                        print("这个题答错了，进行下一题\n")
                     question_body = driver_weekly.get_question_body()
                     print(question_body)
                     if "填空题" in category:
@@ -432,6 +436,8 @@ def zhuanxiang(cookies, d_log, each):
                         print("题目类型非法")
                         break
                 else:
+                    if driver_zhuanxiang.click_next_when_error():
+                        print("这个题答错了，进行下一题\n")
                     question_body = driver_zhuanxiang.get_question_body()
                     print(question_body)
                     if "填空题" in category:

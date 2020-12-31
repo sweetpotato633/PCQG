@@ -167,7 +167,7 @@ class Mydriver:
         return self.driver.find_element_by_xpath(xpath).text
 
     def check_delay(self):
-        delay_time = random.randint(2, 15)
+        delay_time = random.randint(1, 5)
         print('等待 ', delay_time, ' 秒')
         time.sleep(delay_time)
 
@@ -244,6 +244,8 @@ class Mydriver:
         try:
             node = self.driver.find_element_by_xpath(path)
             if node.text == "下一题":
+                node.click()
+                self.check_delay()
                 return True
             else:
                 return False

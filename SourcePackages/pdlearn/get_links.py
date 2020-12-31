@@ -7,6 +7,8 @@ def get_article_links():
         #article = requests.get(
         #    "https://www.xuexi.cn/c06bf4acc7eef6ef0a560328938b5771/data9a3668c13f6e303932b5e0e100fc248b.js").content.decode(
         #    "utf8")
+        #artic = requests.get("https://source.xuexi.cn/AWSC/AWSC/awsc.v2.js").content.decode("utf8")
+
         #https://www.xuexi.cn/lgdata/35il6fpn0ohq.json?_st=26820188
         res = requests.get(r'https://www.xuexi.cn/lgdata/35il6fpn0ohq.json?_st=26820188')
         article = res.json()
@@ -75,3 +77,12 @@ def get_video_links():
         print("get_video_links获取失败")
         print("=" * 120)
         raise
+
+
+def test():
+    get_article_links()
+
+
+if __name__ == "__main__":
+    test()
+    print("finished\n")
