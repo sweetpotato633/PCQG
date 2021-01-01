@@ -336,7 +336,7 @@ class Mydriver:
             print(f'根据经验: {chr(len(options) + 64)} 很可能是正确答案')
             return chr(len(options) + 64)
         # url = quote('https://www.baidu.com/s?wd=' + content, safe=string.printable)
-        url = quote("https://www.sogou.com/web?query=" + content, safe=string.printable)
+        url = quote("https://www.sogou.com/web?query=" + content)#, safe=string.printable)
         response = requests.get(url, headers=self.headers).text
         counts = []
         for i, option in zip(['A', 'B', 'C', 'D', 'E', 'F'], options):
