@@ -10,3 +10,7 @@ SourcePackages/cost_time_zhuan.txt
 /SourcePackages/venv
 SourcePackages/chrome/debug.log
 SourcePackages/pandalearning.exe
+/SourcePackages/dist
+/SourcePackages/build
+SourcePackages/__pycache__/pandalearning.cpython-36.pyc
+SourcePackages/pandalearning.spec

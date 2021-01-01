@@ -599,6 +599,7 @@ if __name__ == '__main__':
       （可以根据当日已得做题积分，及是否有可得分套题，决定是否做题）
     3 每日答题+文章+视频
       （可以根据当日已得做题积分，决定是否做题）
+    4 每日答题+每周答题+专项答题 仅答题
 ''',"=" * 120)
     TechXueXi_mode = input("请选择模式（输入对应数字）并回车： ")
 
@@ -610,20 +611,20 @@ if __name__ == '__main__':
     total, each = show_score(cookies)
     nohead, lock, stime = get_argv()
 
-    if TechXueXi_mode in ["2", "3"]:
+    if TechXueXi_mode in ["2", "3","4"]:
         print('开始每日答题……')
         daily(cookies, d_log, each)
-    if TechXueXi_mode in ["2"]:
+    if TechXueXi_mode in ["2","4"]:
         print('开始每周答题……')
         weekly(cookies, d_log, each)
         print('开始专项答题……')
         zhuanxiang(cookies, d_log, each)
-
-    article_thread = threads.MyThread("文章学习", article, cookies, 0, each, lock=lock)
-    video_thread = threads.MyThread("视频学习", video, cookies, 0, each, lock=lock)
-    article_thread.start()
-    video_thread.start()
-    article_thread.join()
-    video_thread.join()
-    print("总计用时" + str(int(time.time() - start_time) / 60) + "分钟")
+    if TechXueXi_mode in ["1","2", "3"]:
+        article_thread = threads.MyThread("文章学习", article, cookies, 0, each, lock=lock)
+        video_thread = threads.MyThread("视频学习", video, cookies, 0, each, lock=lock)
+        article_thread.start()
+        video_thread.start()
+        article_thread.join()
+        video_thread.join()
+        print("总计用时" + str(int(time.time() - start_time) / 60) + "分钟")
     user.shutdown(stime)
