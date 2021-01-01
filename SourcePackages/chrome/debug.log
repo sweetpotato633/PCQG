@@ -1663,3 +1663,7 @@
 [0316/162324.319:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
 [0318/105323.923:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
 [0319/105326.858:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0101/144935.652:ERROR:process_reader_win.cc(123)] NtOpenThread: {无法访问} 过程已请求访问一对象，但未给访问权限。 (0xc0000022)
+[0101/144935.654:ERROR:exception_snapshot_win.cc(98)] thread ID 2116 not found in process
+[0101/144935.677:ERROR:process_reader_win.cc(123)] NtOpenThread: {无法访问} 过程已请求访问一对象，但未给访问权限。 (0xc0000022)
+[0101/144935.677:ERROR:exception_snapshot_win.cc(98)] thread ID 11172 not found in process
