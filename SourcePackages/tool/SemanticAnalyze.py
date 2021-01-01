@@ -39,6 +39,14 @@ def do_muti_selection(selections,question_content,hint):
     for i in range(len(selections)):
         if expand_tool.remove_symbol(selections[i]) in hint:
             sel_list.append(letters[i])
+    if len(sel_list) < count:#判断出的选项不够，随机补一个
+        n1 = count - len(sel_list)
+        t1 = 0
+        for let in letters:
+            if let not in sel_list and t1 < n1:
+                sel_list.append(let)
+                t1 += 1
+
     return sel_list
 
 def do_single_selection(selections, question_content, hint_text):

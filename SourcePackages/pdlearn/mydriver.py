@@ -166,10 +166,13 @@ class Mydriver:
         WebDriverWait(driver=self.driver, timeout=15, poll_frequency=1).until(self.condition)
         return self.driver.find_element_by_xpath(xpath).text
 
-    def check_delay(self):
-        delay_time = random.randint(1, 5)
-        print('等待 ', delay_time, ' 秒')
-        time.sleep(delay_time)
+    def check_delay(self,time_start=1,time_end=7):
+        #delay_time = random.randint(time_start, time_end)
+        seg = random.randint(1,10)
+        ratio = seg/10
+        delay = time_start + (time_end-time_start)*ratio
+        print('等待 ', delay, ' 秒')
+        time.sleep(delay)
 
     def _view_tips(self):
         # global answer
@@ -183,7 +186,7 @@ class Mydriver:
         except Exception as e:
             print("没有可点击的【查看提示】按钮")
             return ""
-        time.sleep(2)
+        self.check_delay(time_start=1.5,time_end=3)
         try:
             # tips_open = self.driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[4]/div[1]/div[3]/span')
             tips_open = self.driver.find_element_by_xpath(
@@ -214,14 +217,15 @@ class Mydriver:
             print('无法查看提示内容')
             print(e)
             return ""
-        time.sleep(2)
+        self.check_delay(time_start=1.5,time_end=3)
 
         try:
             tips_close = self.driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[4]/div[1]/div[1]')
             tips_close.click()
         except Exception as e:
-            print("没有可点击的【关闭提示】按钮")
-        time.sleep(2)
+            #print("没有可点击的【关闭提示】按钮")
+            pass
+        self.check_delay(time_start=1.5,time_end=3)
         return answer
 
     def radio_get_options(self):
@@ -239,17 +243,22 @@ class Mydriver:
         node = self.driver.find_element_by_xpath(r'//*[@id="app"]//div[@class="detail-body"]//div[@class="q-body"]/div')
         return node.text
 
-    def click_next_when_error(self):
+    def click_next_when_error(self,test_type=""):
         path = r'//div[@class="action-row"]/button/span'
+        path_btn = r'//div[@class="action-row"]/button'
+        if test_type == "专项":#专项答题没有确定，直接就是下一题，所以此处直接返回
+            return False
         try:
             node = self.driver.find_element_by_xpath(path)
             if node.text == "下一题":
-                node.click()
+                btn = self.driver.find_element_by_xpath(path_btn)
+                btn.click()
                 self.check_delay()
                 return True
             else:
                 return False
-        except:
+        except Exception as e:
+            #print(e)
             return False
 
 
@@ -260,15 +269,17 @@ class Mydriver:
             try:
                 self.driver.find_element_by_xpath(
                     path2 + check_option + '")]').click()
+                self.check_delay(time_start=1,time_end=2)
+
             except Exception as e:
                 print("点击", check_option, '失败！')
-        self.check_delay()
+
         submit = WebDriverWait(self.driver, 15).until(lambda driver: driver.find_element_by_class_name("action-row").find_elements_by_xpath("button"))
         if len(submit) > 1:
             self.click_xpath('//*[@id="app"]/div/div[2]/div/div[6]/div[2]/button[2]')
             print("成功点击交卷！")
         else:
-            self.click_xpath('//*[@id="app"]/div/div[*]/div/div[*]/div[*]/button')
+            self.click_xpath('//*[@id="app"]//div[@class="action-row"]//button')
             print("点击进入下一题")
 
     def blank_get(self):
@@ -292,12 +303,15 @@ class Mydriver:
         self.check_delay()
         submit = WebDriverWait(self.driver, 15).until(
             lambda driver: driver.find_element_by_class_name("action-row").find_elements_by_xpath("button"))
-        if len(submit) > 1:
-            self.click_xpath('//*[@id="app"]/div/div[2]/div/div[6]/div[2]/button[2]')
-            print("成功点击交卷！")
-        else:
-            self.click_xpath('//*[@id="app"]/div/div[*]/div/div[*]/div[*]/button')
-            print("点击进入下一题")
+        try:
+            if len(submit) > 1:
+                self.click_xpath('//*[@id="app"]/div/div[2]/div/div[6]/div[2]/button[2]')
+                print("成功点击交卷！")
+            else:
+                self.click_xpath('//*[@id="app"]//div[@class="action-row"]/button')#//*[@id="app"]/div/div[*]/div/div[*]/div[*]/button
+                print("点击进入下一题")
+        except:
+            print("点击按钮失败，请检查XPath路径")
 
     def zhuanxiang_fill_in_blank(self, answer):
         for i in range(0, len(answer)):

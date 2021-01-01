@@ -185,13 +185,26 @@ def video(cookies, v_log, each):
         print("视频之前学完了")
 
 
-def check_delay():
-    delay_time = random.randint(2, 5)
-    print('等待 ', delay_time, ' 秒')
-    time.sleep(delay_time)
+def check_delay(self, time_start=1, time_end=5):
+    # delay_time = random.randint(time_start, time_end)
+    seg = random.randint(1, 10)
+    ratio = seg / 10
+    delay = time_start + (time_end - time_start) * ratio
+    #print('等待 ', delay, ' 秒')
+    time.sleep(delay)
+
+
+def save_cost_time(file_name,msg):
+    with open(file_name,'a+',encoding='utf8') as fp:
+        msg = msg + '\n'
+        fp.write(msg)
+
 
 
 def daily(cookies, d_log, each):
+    start_time = time.time()
+    last_time = time.time()
+    time_list = []
     if each[5] < 6:
         # driver_daily = mydriver.Mydriver(nohead=nohead)  time.sleep(random.randint(5, 15))
         driver_daily = mydriver.Mydriver(nohead=False)
@@ -208,6 +221,7 @@ def daily(cookies, d_log, each):
             letters = list("ABCDEFGHIJKLMN")
             driver_daily.get_url('https://pc.xuexi.cn/points/my-points.html')
             driver_daily.click_xpath('//*[@id="app"]/div/div[2]/div/div[3]/div[2]/div[5]/div[2]/div[2]/div')
+            tips_err = 0
             while each[5] < 6:
                 try:
                     category = driver_daily.xpath_getText(
@@ -217,54 +231,83 @@ def daily(cookies, d_log, each):
                     break
                 print(category)
                 tips = driver_daily._view_tips()
-                check_delay()
+                driver_daily.check_delay()
+
                 if not tips:
-                    print("本题没有提示")
+                    tips_err += 1
                     if "填空题" in category:
-                        print('没有找到提示，暂时略过')
-                        continue
+                        print('没有找到提示，重试...')
+                        if tips_err < 3:
+                            continue
                     elif "多选题" in category:
-                        print('没有找到提示，暂时略过')
-                        continue
+                        print('没有找到提示，重试...')
+                        if tips_err < 3:
+                            continue
                     elif "单选题" in category:
-                        print('没有找到提示，暂时略过')
-                        continue
+                        print('没有找到提示，重试...')
+                        if tips_err < 3:
+                            continue
                         # return driver_daily._search(driver_daily.content, driver_daily.options, driver_daily.excludes)
                     else:
                         print("题目类型非法")
                         break
                 else:
-                    if driver_daily.click_next_when_error():
-                        print("这个题答错了，进行下一题\n")
-                    question_body = driver_daily.get_question_body()
-                    print(question_body)
-                    if "填空题" in category:
-                        answer = tips
+                    tips_err = 0
+
+                if driver_daily.click_next_when_error():
+                    print("这个题答错了，进行下一题\n")
+                    continue
+                question_body = driver_daily.get_question_body()
+                print(question_body)
+                if "填空题" in category:
+                    answer = tips
+                    if not tips:
+                        answer = "和谐社会和谐社会"
+                        print("\n未找到提示，随便填了一个\n")
+                    try:
                         driver_daily.fill_in_blank(answer)
+                    except:
+                        continue
 
-                    elif "多选题" in category:
-                        options = driver_daily.radio_get_options()
-                        selections = [op[2:] for op in options]
-                        radio_in_tips = SemanticAnalyze.do_muti_selection(selections,question_body,tips)
-                        print('根据提示', radio_in_tips)
-                        driver_daily.radio_check(radio_in_tips)
+                elif "多选题" in category:
+                    options = driver_daily.radio_get_options()
+                    selections = [op[2:] for op in options]
+                    try:
+                        radio_in_tips = SemanticAnalyze.do_muti_selection(selections, question_body, tips)
+                    except:
+                        continue
+                    print('根据提示', radio_in_tips)
+                    driver_daily.radio_check(radio_in_tips)
 
-                    elif "单选题" in category:
-                        options = driver_daily.radio_get_options()
-                        selections = [op[2:] for op in options]
+                elif "单选题" in category:
+                    options = driver_daily.radio_get_options()
+                    selections = [op[2:] for op in options]
+                    try:
                         radio_in_tips = SemanticAnalyze.do_single_selection(selections, question_body, tips)
-                        print('根据提示', radio_in_tips)
-                        driver_daily.radio_check(radio_in_tips)
-                    else:
-                        print("题目类型非法")
-                        break
-                    # print("\r每日答题中，题目剩余{}题".format(d_log + d_num - i), end="")
-                    time.sleep(1)
+                    except:
+                        continue
+                    print('根据提示', radio_in_tips)
+                    driver_daily.radio_check(radio_in_tips)
+                else:
+                    print("题目类型非法")
+                    break
+                # print("\r每日答题中，题目剩余{}题".format(d_log + d_num - i), end="")
+                time.sleep(1)
+
                 d_log += d_num
+                cur_time = time.time()
+                t1 = cur_time - last_time
+                last_time = cur_time
+                time_list.append(t1)
 
             total, each = show_score(cookies)
             if each[5] >= 6:
                 print("检测到每日答题分数已满,退出学习")
+                cur_time = time.time()
+                t1 = cur_time - start_time
+                time_list.append(t1)
+                time_str = [str(temp) for temp in time_list]
+                save_cost_time('cost_time_daily.txt',','.join(time_str))
                 driver_daily.quit()
         else:
             with open("./user/{}/d_log".format(uname), "w", encoding="utf8") as fp:
@@ -279,6 +322,9 @@ def daily(cookies, d_log, each):
 
 
 def weekly(cookies, d_log, each):
+    start_time = time.time()
+    last_time = time.time()
+    time_list = []
     if each[6] < 5:
         # driver_weekly = mydriver.Mydriver(nohead=nohead)  time.sleep(random.randint(5, 15))
         driver_weekly = mydriver.Mydriver(nohead=False)
@@ -311,6 +357,7 @@ def weekly(cookies, d_log, each):
                             '//*[@id="app"]/div/div[2]/div/div[4]/div/div[' + str(tem + 1) + ']/div[2]/div[' + str(
                                 tem2 + 1) + ']/button')
                         flag = 0
+            tips_err = 0
             while each[6] < 5 and try_count < 10:
                 try:
                     category = driver_weekly.xpath_getText(
@@ -320,54 +367,82 @@ def weekly(cookies, d_log, each):
                     break
                 print(category)
                 tips = driver_weekly._view_tips()
-                check_delay()
+                driver_weekly.check_delay()
                 if not tips:
-                    print("本题没有提示")
+                    tips_err += 1
                     if "填空题" in category:
-                        print('没有找到提示，暂时略过')
-                        continue
+                        print('没有找到提示，重试...')
+                        if tips_err < 3:
+                            continue
                     elif "多选题" in category:
-                        print('没有找到提示，暂时略过')
-                        continue
+                        print('没有找到提示，重试...')
+                        if tips_err < 3:
+                            continue
                     elif "单选题" in category:
-                        print('没有找到提示，暂时略过')
-                        continue
+                        print('没有找到提示，重试...')
+                        if tips_err < 3:
+                            continue
                         # return driver_daily._search(driver_daily.content, driver_daily.options, driver_daily.excludes)
                     else:
                         print("题目类型非法")
                         break
                 else:
-                    if driver_weekly.click_next_when_error():
-                        print("这个题答错了，进行下一题\n")
-                    question_body = driver_weekly.get_question_body()
-                    print(question_body)
-                    if "填空题" in category:
-                        answer = tips
+                    tips_err = 0
+
+                if driver_weekly.click_next_when_error():
+                    print("这个题答错了，进行下一题\n")
+                    continue
+                question_body = driver_weekly.get_question_body()
+                print(question_body)
+                if "填空题" in category:
+                    answer = tips
+                    if not tips:
+                        answer = "和谐社会和谐社会"
+                        print("\n未找到提示，随便填了一个\n")
+                    try:
                         driver_weekly.fill_in_blank(answer)
+                    except:
+                        continue
 
-                    elif "多选题" in category:
-                        options = driver_weekly.radio_get_options()
-                        selections = [op[2:] for op in options]
+                elif "多选题" in category:
+                    options = driver_weekly.radio_get_options()
+                    selections = [op[2:] for op in options]
+                    try:
                         radio_in_tips = SemanticAnalyze.do_muti_selection(selections, question_body, tips)
-                        print('根据提示', radio_in_tips)
-                        driver_weekly.radio_check(radio_in_tips)
+                    except:
+                        continue
+                    print('根据提示', radio_in_tips)
+                    driver_weekly.radio_check(radio_in_tips)
 
-                    elif "单选题" in category:
-                        options = driver_weekly.radio_get_options()
-                        selections = [op[2:] for op in options]
+                elif "单选题" in category:
+                    options = driver_weekly.radio_get_options()
+                    selections = [op[2:] for op in options]
+                    try:
                         radio_in_tips = SemanticAnalyze.do_single_selection(selections, question_body, tips)
-                        print('根据提示', radio_in_tips)
-                        driver_weekly.radio_check(radio_in_tips)
-                    else:
-                        print("题目类型非法")
-                        break
-                    # print("\r每周答题中，题目剩余{}题".format(d_log + d_num - i), end="")
-                    time.sleep(1)
+                    except:
+                        continue
+                    print('根据提示', radio_in_tips)
+                    driver_weekly.radio_check(radio_in_tips)
+                else:
+                    print("题目类型非法")
+                    break
+                # print("\r每周答题中，题目剩余{}题".format(d_log + d_num - i), end="")
+                time.sleep(1)
+
                 d_log += d_num
+                cur_time = time.time()
+                t1 = cur_time - last_time
+                last_time = cur_time
+                time_list.append(t1)
 
             total, each = show_score(cookies)
             if each[6] >= 5:
                 print("检测到每周答题分数已满,退出学习")
+                cur_time = time.time()
+                t1 = cur_time - start_time
+                time_list.append(t1)
+                time_str = [str(temp) for temp in time_list]
+                save_cost_time('cost_time_weekly.txt', ','.join(time_str))
                 driver_weekly.quit()
         else:
             with open("./user/{}/d_log".format(uname), "w", encoding="utf8") as fp:
@@ -382,6 +457,9 @@ def weekly(cookies, d_log, each):
 
 
 def zhuanxiang(cookies, d_log, each):
+    start_time = time.time()
+    last_time = time.time()
+    time_list = []
     if each[7] < 10:
         # driver_zhuanxiang = mydriver.Mydriver(nohead=nohead)  time.sleep(random.randint(5, 15))
         driver_zhuanxiang = mydriver.Mydriver(nohead=False)
@@ -419,56 +497,82 @@ def zhuanxiang(cookies, d_log, each):
                     break
                 print(category)
                 tips = driver_zhuanxiang._view_tips()
-                check_delay()
+                driver_zhuanxiang.check_delay()
                 if not tips:
-                    print("本题没有提示")
+                    tips_err += 1
                     if "填空题" in category:
-                        print('没有找到提示，暂时略过')
-                        continue
+                        print('没有找到提示，重试...')
+                        if tips_err < 3:
+                            continue
                     elif "多选题" in category:
-                        print('没有找到提示，暂时略过')
-                        continue
+                        print('没有找到提示，重试...')
+                        if tips_err < 3:
+                            continue
                     elif "单选题" in category:
-                        print('没有找到提示，暂时略过')
-                        continue
+                        print('没有找到提示，重试...')
+                        if tips_err < 3:
+                            continue
                         # return driver_daily._search(driver_daily.content, driver_daily.options, driver_daily.excludes)
                     else:
                         print("题目类型非法")
                         break
                 else:
-                    if driver_zhuanxiang.click_next_when_error():
-                        print("这个题答错了，进行下一题\n")
-                    question_body = driver_zhuanxiang.get_question_body()
-                    print(question_body)
-                    if "填空题" in category:
-                        answer = tips
-                        if not tips:
-                            answer = "和谐社会和谐社会"
-                            print("\n未找到提示，随便填了一个\n")
+                    tips_err = 0
+
+                if driver_zhuanxiang.click_next_when_error(test_type="专项"):
+                    print("这个题答错了，进行下一题\n")
+                    continue
+                question_body = driver_zhuanxiang.get_question_body()
+                print(question_body)
+                if "填空题" in category:
+                    answer = tips
+                    if not tips:
+                        answer = "和谐社会和谐社会"
+                        print("\n未找到提示，随便填了一个\n")
+                    try:
                         driver_zhuanxiang.fill_in_blank(answer)
+                    except:
+                        continue
 
-                    elif "多选题" in category:
-                        options = driver_zhuanxiang.radio_get_options()
-                        selections = [op[2:] for op in options]
+                elif "多选题" in category:
+                    options = driver_zhuanxiang.radio_get_options()
+                    selections = [op[2:] for op in options]
+                    try:
                         radio_in_tips = SemanticAnalyze.do_muti_selection(selections, question_body, tips)
-                        print('根据提示', radio_in_tips)
-                        driver_zhuanxiang.radio_check(radio_in_tips)
+                    except:
+                        continue
+                    print('根据提示', radio_in_tips)
+                    driver_zhuanxiang.radio_check(radio_in_tips)
 
-                    elif "单选题" in category:
-                        options = driver_zhuanxiang.radio_get_options()
-                        selections = [op[2:] for op in options]
+                elif "单选题" in category:
+                    options = driver_zhuanxiang.radio_get_options()
+                    selections = [op[2:] for op in options]
+                    try:
                         radio_in_tips = SemanticAnalyze.do_single_selection(selections, question_body, tips)
-                        print('根据提示', radio_in_tips)
-                        driver_zhuanxiang.radio_check(radio_in_tips)
-                    else:
-                        print("题目类型非法")
-                        break
-                    time.sleep(1)
+                    except:
+                        continue
+                    print('根据提示', radio_in_tips)
+                    driver_zhuanxiang.radio_check(radio_in_tips)
+                else:
+                    print("题目类型非法")
+                    break
+                time.sleep(1)
+
                 d_log += d_num
+                cur_time = time.time()
+                t1 = cur_time - last_time
+                last_time = cur_time
+                time_list.append(t1)
 
             total, each = show_score(cookies)
             if each[6] >= 5:
                 print("检测到专项答题分数已满,退出学习")
+                cur_time = time.time()
+                t1 = cur_time - start_time
+                time_list.append(t1)
+                time_str = [str(temp) for temp in time_list]
+                save_cost_time('cost_time_zhuan.txt', ','.join(time_str))
+
                 driver_zhuanxiang.quit()
         else:
             with open("./user/{}/d_log".format(uname), "w", encoding="utf8") as fp:
