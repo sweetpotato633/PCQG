@@ -297,7 +297,9 @@ class Mydriver:
     def fill_in_blank(self, answer):
         path1 = r'//*[@id="app"]/div/div[2]/div/div[4]/div[1]/div[2]/div/input['
         path2 = r'//*[@id="app"]//div[@class="question"]//div[@class="q-body"]/div/input['
-        for i in range(0, len(answer)):
+        path3 = r'//*[@id="app"]//div[@class="question"]//div[@class="q-body"]/div/input'
+        tinput = self.driver.find_elements_by_xpath(path3)
+        for i in range(0, len(tinput)):
             self.driver.find_element_by_xpath(
                 path2 + str(i + 1) + ']').send_keys(answer[i])
         self.check_delay()
@@ -308,7 +310,7 @@ class Mydriver:
                 self.click_xpath('//*[@id="app"]/div/div[2]/div/div[6]/div[2]/button[2]')
                 print("成功点击交卷！")
             else:
-                self.click_xpath('//*[@id="app"]//div[@class="action-row"]/button')#//*[@id="app"]/div/div[*]/div/div[*]/div[*]/button
+                self.click_xpath('//*[@id="app"]//div[@class="action-row"]//button')#//*[@id="app"]/div/div[*]/div/div[*]/div[*]/button
                 print("点击进入下一题")
         except:
             print("点击按钮失败，请检查XPath路径")

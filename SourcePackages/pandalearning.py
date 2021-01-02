@@ -266,7 +266,8 @@ def daily(cookies, d_log, each):
                         print("\n未找到提示，随便填了一个\n")
                     try:
                         driver_daily.fill_in_blank(answer)
-                    except:
+                    except Exception as e:
+                        print(e)
                         continue
 
                 elif "多选题" in category:
