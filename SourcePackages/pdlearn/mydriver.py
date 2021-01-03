@@ -205,6 +205,8 @@ class Mydriver:
             print(e)
         try:
             for i in content:
+                if content == "":
+                    continue
                 answer.append(i.text)
                 '''
             if len(answer) >= 2:
