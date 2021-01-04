@@ -250,6 +250,11 @@ def daily(cookies, d_log, each):
                         # return driver_daily._search(driver_daily.content, driver_daily.options, driver_daily.excludes)
                     else:
                         print("题目类型非法")
+                        cur_time = time.time()
+                        t1 = cur_time - start_time
+                        time_list.append(t1)
+                        time_str = [str(temp) for temp in time_list]
+                        save_cost_time('cost_time_daily.txt', ','.join(time_str))
                         break
                 else:
                     tips_err = 0
@@ -391,6 +396,11 @@ def weekly(cookies, d_log, each):
                         # return driver_daily._search(driver_daily.content, driver_daily.options, driver_daily.excludes)
                     else:
                         print("题目类型非法")
+                        cur_time = time.time()
+                        t1 = cur_time - start_time
+                        time_list.append(t1)
+                        time_str = [str(temp) for temp in time_list]
+                        save_cost_time('cost_time_weekly.txt', ','.join(time_str))
                         break
                 else:
                     tips_err = 0
@@ -526,6 +536,11 @@ def zhuanxiang(cookies, d_log, each):
                         # return driver_daily._search(driver_daily.content, driver_daily.options, driver_daily.excludes)
                     else:
                         print("题目类型非法")
+                        cur_time = time.time()
+                        t1 = cur_time - start_time
+                        time_list.append(t1)
+                        time_str = [str(temp) for temp in time_list]
+                        save_cost_time('cost_time_zhuan.txt', ','.join(time_str))
                         break
                 else:
                     tips_err = 0
