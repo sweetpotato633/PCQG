@@ -246,13 +246,13 @@ class Mydriver:
         return node.text
 
     def click_next_when_error(self,test_type=""):
-        path = r'//div[@class="action-row"]/button/span'
-        path_btn = r'//div[@class="action-row"]/button'
+        path = r'//div[@class="action-row"]//button/span'
+        path_btn = r'//div[@class="action-row"]//button'
         if test_type == "专项":#专项答题没有确定，直接就是下一题，所以此处直接返回
             return False
         try:
             node = self.driver.find_element_by_xpath(path)
-            if node.text == "下一题":
+            if node.text == "下一题" or node.text == "完成":
                 btn = self.driver.find_element_by_xpath(path_btn)
                 btn.click()
                 self.check_delay()
