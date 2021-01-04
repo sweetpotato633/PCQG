@@ -291,6 +291,11 @@ def daily(cookies, d_log, each):
                     driver_daily.radio_check(radio_in_tips)
                 else:
                     print("题目类型非法")
+                    cur_time = time.time()
+                    t1 = cur_time - start_time
+                    time_list.append(t1)
+                    time_str = [str(temp) for temp in time_list]
+                    save_cost_time('cost_time_daily.txt', ','.join(time_str))
                     break
                 # print("\r每日答题中，题目剩余{}题".format(d_log + d_num - i), end="")
                 time.sleep(1)
@@ -426,6 +431,11 @@ def weekly(cookies, d_log, each):
                     driver_weekly.radio_check(radio_in_tips)
                 else:
                     print("题目类型非法")
+                    cur_time = time.time()
+                    t1 = cur_time - start_time
+                    time_list.append(t1)
+                    time_str = [str(temp) for temp in time_list]
+                    save_cost_time('cost_time_weekly.txt', ','.join(time_str))
                     break
                 # print("\r每周答题中，题目剩余{}题".format(d_log + d_num - i), end="")
                 time.sleep(1)
@@ -556,6 +566,11 @@ def zhuanxiang(cookies, d_log, each):
                     driver_zhuanxiang.radio_check(radio_in_tips)
                 else:
                     print("题目类型非法")
+                    cur_time = time.time()
+                    t1 = cur_time - start_time
+                    time_list.append(t1)
+                    time_str = [str(temp) for temp in time_list]
+                    save_cost_time('cost_time_zhuan.txt', ','.join(time_str))
                     break
                 time.sleep(1)
 
