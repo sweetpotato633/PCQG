@@ -212,7 +212,7 @@ def daily(cookies, d_log, each):
         print('请保持窗口最大化')
         print('请保持窗口最大化')
         print('请保持窗口最大化')
-        #driver_daily.get_url("https://www.xuexi.cn/notFound.html")
+        driver_daily.get_url("https://www.xuexi.cn/notFound.html")
         driver_daily.set_cookies(cookies)
         try_count = 0
 
@@ -343,7 +343,7 @@ def weekly(cookies, d_log, each):
         print('请保持窗口最大化')
         print('请保持窗口最大化')
         print('请保持窗口最大化')
-        #driver_weekly.get_url("https://www.xuexi.cn/notFound.html")
+        driver_weekly.get_url("https://www.xuexi.cn/notFound.html")
         driver_weekly.set_cookies(cookies)
         try_count = 0
 
@@ -488,7 +488,7 @@ def zhuanxiang(cookies, d_log, each):
         print('请保持窗口最大化')
         print('请保持窗口最大化')
         print('请保持窗口最大化')
-        #driver_zhuanxiang.get_url("https://www.xuexi.cn/notFound.html")
+        driver_zhuanxiang.get_url("https://www.xuexi.cn/notFound.html")
         driver_zhuanxiang.set_cookies(cookies)
         try_count = 0
 
