@@ -14,3 +14,8 @@ SourcePackages/pandalearning.exe
 /SourcePackages/build
 SourcePackages/__pycache__/pandalearning.cpython-36.pyc
 SourcePackages/pandalearning.spec
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/PCQG.iml
+.idea/vcs.xml
