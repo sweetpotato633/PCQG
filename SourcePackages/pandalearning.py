@@ -61,7 +61,7 @@ def show_score(cookies):
 def article(cookies, a_log, each):
     if each[0] < 6 or each[3] < 8:
         driver_article = mydriver.Mydriver(nohead=nohead)
-        driver_article.get_url("https://www.xuexi.cn/notFound.html")
+        driver_article.get_url("https://www.xuexi.cn")
         driver_article.set_cookies(cookies)
         links,titles = get_links.get_article_links()
         try_count = 0
@@ -124,7 +124,7 @@ def article(cookies, a_log, each):
 def video(cookies, v_log, each):
     if each[1] < 6 or each[4] < 10:
         driver_video = mydriver.Mydriver(nohead=nohead)
-        driver_video.get_url("https://www.xuexi.cn/notFound.html")
+        driver_video.get_url("https://www.xuexi.cn")
         driver_video.set_cookies(cookies)
         links,titles = get_links.get_video_links()
         try_count = 0
@@ -212,7 +212,7 @@ def daily(cookies, d_log, each):
         print('请保持窗口最大化')
         print('请保持窗口最大化')
         print('请保持窗口最大化')
-        driver_daily.get_url("https://www.xuexi.cn/notFound.html")
+        driver_daily.get_url("https://www.xuexi.cn")
         driver_daily.set_cookies(cookies)
         try_count = 0
 
@@ -343,7 +343,7 @@ def weekly(cookies, d_log, each):
         print('请保持窗口最大化')
         print('请保持窗口最大化')
         print('请保持窗口最大化')
-        driver_weekly.get_url("https://www.xuexi.cn/notFound.html")
+        driver_weekly.get_url("https://www.xuexi.cn")
         driver_weekly.set_cookies(cookies)
         try_count = 0
 
@@ -488,7 +488,7 @@ def zhuanxiang(cookies, d_log, each):
         print('请保持窗口最大化')
         print('请保持窗口最大化')
         print('请保持窗口最大化')
-        driver_zhuanxiang.get_url("https://www.xuexi.cn/notFound.html")
+        driver_zhuanxiang.get_url("https://www.xuexi.cn")
         driver_zhuanxiang.set_cookies(cookies)
         try_count = 0
 
@@ -624,6 +624,7 @@ if __name__ == '__main__':
     start_time = time.time()
 
     print("=" * 120,'''
+    V1.1 2021-01-27 优化了延时处理；优化了延时显示；修改答题默认页面为强国主页
     科技强国 现支持以下模式（答题时请值守电脑旁处理少部分不正常的题目）：
     1 文章+视频
     2 每日答题+每周答题+专项答题+文章+视频
