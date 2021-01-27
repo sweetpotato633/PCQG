@@ -219,7 +219,7 @@ class Mydriver:
             print('无法查看提示内容')
             print(e)
             return ""
-        self.check_delay(time_start=1.5,time_end=3)
+        #self.check_delay(time_start=1.5,time_end=3)
 
         try:
             tips_close = self.driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div[4]/div[1]/div[1]')
@@ -227,7 +227,7 @@ class Mydriver:
         except Exception as e:
             #print("没有可点击的【关闭提示】按钮")
             pass
-        self.check_delay(time_start=1.5,time_end=3)
+        #self.check_delay(time_start=1,time_end=5)
         return answer
 
     def radio_get_options(self):
